@@ -1,4 +1,7 @@
 from flask import Flask, request, jsonify
+import datetime
+import json
+
 from backend import push_data
 
 app = Flask(__name__)
@@ -14,9 +17,13 @@ def get_temp_data(): # retrieve post request and send to the pandas backend
     sensor_type = data.get("sensor")
     temp = data.get("value")
     
-    if(sensor_type == "temperature"):
+    if(sensor_type == "temp"):
         print(f"Temperature: {temp} [Celsius].")
+
         print("Storing...")
+        time = datetime.datetime.now()
+        data["timestamp"] = time
+
         push_data(data)
     else:
         print("No temperature readings found!")
@@ -35,7 +42,11 @@ def get_ph_data():
     
     if(sensor_type == "acid"):
         print(f"Acidity Level: {ph} [pH].")
+
         print("Storing...")
+        time = datetime.datetime.now()
+        data["timestamp"] = time
+
         push_data(data)
     else:
         print("No acidity readings found!")
@@ -54,7 +65,11 @@ def get_do_data():
     
     if(sensor_type == "oxygen"):
         print(f"Dissolved oxygen concentration: {do} [mg/L].")
+        
         print("Storing...")
+        time = datetime.datetime.now()
+        data["timestamp"] = time
+
         push_data(data)
     else:
         print("No dissolved oxygen readings found!")
