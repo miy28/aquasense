@@ -4,3 +4,4 @@ DallasTemperature
 OneWire
 WiFi
 PubSubclient
+HttpClient

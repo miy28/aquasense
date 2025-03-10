@@ -1,6 +1,7 @@
 #include <WiFi.h>
 #include <HttpClient.h>
 #include <PubSubClient.h>
+#include <DFRobot_PH.h>
 #include <DS18B20.h>
 #include <DallasTemperature.h>
 #include <OneWire.h>
