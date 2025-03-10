@@ -14,11 +14,11 @@ def get_temp_data(): # retrieve post request and send to the pandas backend
         print("Error: invalid JSON.")
         return -1
 
-    sensor_type = data.get("sensor")
+    sensor_type = data.get("sensor_type")
     temp = data.get("value")
     
     if(sensor_type == "temp"):
-        print(f"Temperature: {temp} [Celsius].")
+        print(f"Temperature: {temp} [Fahrenheit].")
 
         print("Storing...")
         time = datetime.datetime.now()
@@ -37,7 +37,7 @@ def get_ph_data():
         print("Error: invalid JSON.")
         return -1
 
-    sensor_type = data.get("sensor")
+    sensor_type = data.get("sensor_type")
     ph = data.get("value")
     
     if(sensor_type == "acid"):
@@ -60,7 +60,7 @@ def get_do_data():
         print("Error: invalid JSON.")
         return -1
 
-    sensor_type = data.get("sensor")
+    sensor_type = data.get("sensor_type")
     do = data.get("value")
     
     if(sensor_type == "oxygen"):
