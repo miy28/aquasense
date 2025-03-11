@@ -1,6 +1,6 @@
 #include <WiFi.h>
-#include <HttpClient.h>
-#include <PubSubClient.h>
+#include <HTTPClient.h>
+// #include <PubSubClient.h>
 #include <DFRobot_PH.h>
 #include <DS18B20.h>
 #include <DallasTemperature.h>
@@ -10,10 +10,12 @@
 // have to use phone hotspot...
 
 // wifi config
-char* ssid = "";
-char* pass = "";
-char* local_ip = ""; // use laptop/pc ip
-char* serverUrl = "http://" + local_ip + ":5000";
+String ssid = "";
+String pass = "";
+
+String local_ip = "";
+String serverUrl = "http://" + local_ip + ":5000/data";
+IPAddress localIp();
 
 // sensor config
 const int oneWireBus = 4; // gpio pin for ds18b20
@@ -22,23 +24,35 @@ DallasTemperature temp_sensor(&oneWire);
 
 void setup() {
   // get serial connection (esp to programmer)
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   // get wifi connection
-  WiFi.begin(ssid, pass);
   Serial.println("Establishing WiFi connection...");
+  WiFi.begin(ssid, pass);
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
     Serial.println(".");
   }
   Serial.println("WiFi connection established!");
 
+  Serial.println("Pinging server...");
+  WiFiClient client;
+  if (!client.connect(localIp, 5000)) {
+      Serial.println("Failed to connect to server!");
+  } else {
+      Serial.println("Connected to Flask server!");
+      client.stop();
+  }
+
   // get sensor connection
+  Serial.println("Establishing DS18B20 Connection...");
   temp_sensor.begin();
+  Serial.println("DS18B20 connected!");
+  Serial.println(temp_sensor.getDeviceCount());
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  // // put your main code here, to run repeatedly:
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
     http.begin(serverUrl);
@@ -49,13 +63,17 @@ void loop() {
     temp_sensor.requestTemperatures();
     float temp_data = temp_sensor.getTempFByIndex(0);
 
-    String jsonPOST = " {\"sensor_type\": \"temp\", 
-                        \"value\": " + String(temp_data) + "}";
+    String jsonPOST = "{\"sensor_type\": \"temp\", \"value\": " + String(temp_data) + "}";
 
     int httpResponseCode = http.POST(jsonPOST);
 
+    Serial.println(temp_data);
+    Serial.println(httpResponseCode);
+
     if(httpResponseCode > 0) {
-      Serial.println("Post status: OK (" + httpResponseCode + ")");
+      Serial.println("Post status: OK (");
+      Serial.println(httpResponseCode); 
+      Serial.println(")");
     }
     else {
       Serial.println("Post status: No response, failed to send budster (0)");

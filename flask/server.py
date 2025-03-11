@@ -24,58 +24,59 @@ def get_temp_data(): # retrieve post request and send to the pandas backend
         time = datetime.datetime.now()
         data["timestamp"] = time
 
+        print(data)
         push_data(data)
     else:
         print("No temperature readings found!")
         return -1
     
-    return temp
+    return str(temp)
 
-def get_ph_data(): 
-    data = request.get_json(silent=True)
-    if not data:
-        print("Error: invalid JSON.")
-        return -1
+# def get_ph_data(): 
+#     data = request.get_json(silent=True)
+#     if not data:
+#         print("Error: invalid JSON.")
+#         return -1
 
-    sensor_type = data.get("sensor_type")
-    ph = data.get("value")
+#     sensor_type = data.get("sensor_type")
+#     ph = data.get("value")
     
-    if(sensor_type == "acid"):
-        print(f"Acidity Level: {ph} [pH].")
+#     if(sensor_type == "acid"):
+#         print(f"Acidity Level: {ph} [pH].")
 
-        print("Storing...")
-        time = datetime.datetime.now()
-        data["timestamp"] = time
+#         print("Storing...")
+#         time = datetime.datetime.now()
+#         data["timestamp"] = time
 
-        push_data(data)
-    else:
-        print("No acidity readings found!")
-        return -1
+#         push_data(data)
+#     else:
+#         print("No acidity readings found!")
+#         return -1
 
-    return ph
+#     return ph
 
-def get_do_data(): 
-    data = request.get_json(silent=True)
-    if not data:
-        print("Error: invalid JSON.")
-        return -1
+# def get_do_data(): 
+#     data = request.get_json(silent=True)
+#     if not data:
+#         print("Error: invalid JSON.")
+#         return -1
 
-    sensor_type = data.get("sensor_type")
-    do = data.get("value")
+#     sensor_type = data.get("sensor_type")
+#     do = data.get("value")
     
-    if(sensor_type == "oxygen"):
-        print(f"Dissolved oxygen concentration: {do} [mg/L].")
+#     if(sensor_type == "oxygen"):
+#         print(f"Dissolved oxygen concentration: {do} [mg/L].")
         
-        print("Storing...")
-        time = datetime.datetime.now()
-        data["timestamp"] = time
+#         print("Storing...")
+#         time = datetime.datetime.now()
+#         data["timestamp"] = time
 
-        push_data(data)
-    else:
-        print("No dissolved oxygen readings found!")
-        return -1
+#         push_data(data)
+#     else:
+#         print("No dissolved oxygen readings found!")
+#         return -1
 
-    return do
+#     return do
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
