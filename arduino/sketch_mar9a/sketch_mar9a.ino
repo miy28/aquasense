@@ -10,7 +10,7 @@
 // have to use phone hotspot...
 
 // wifi config
-String ssid = "";
+String ssid = ""; 
 String pass = "";
 
 String local_ip = "";

@@ -5,6 +5,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import datetime
 import json
+from ml.anomaly import detect_anomalies
+
 
 data = pd.DataFrame(columns=["sensor_type", "value", "timestamp"])
 

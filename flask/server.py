@@ -1,13 +1,37 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import datetime
 import json
+from ml.anomaly import detect_anomalies
 
 from backend import push_data
 
 app = Flask(__name__)
+CORS(app)
 
+'''
+# Example DataFrame:
+sensor_type | value | timestamp
+------------|-------|----------
+temp        | 23    | 2025-03-26 14:45:00
+
+# turns into:
+[
+  {
+    "sensor_type": "temp",
+    "value": 23,
+    "timestamp": "2025-03-26 14:45:00"
+  }
+]
+'''
+# new get endpoint for React
+@app.route('/api/data', methods=['GET'])
+def serve_all_data():
+    from backend import data  # re-import to get live DataFrame
+    return jsonify(data.to_dict(orient='records'))
+
+# endpoint to get temp data from arduino
 @app.route('/data', methods=['POST'])
-
 def get_temp_data(): # retrieve post request and send to the pandas backend
     data = request.get_json(silent=True)
     if not data:
