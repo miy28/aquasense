@@ -35,6 +35,6 @@ we dont need like half of this stuff...
 
 (6) pH Module
 - 6a: pH electrode. high impedance, makes it very sensitive.
-- 6b: establish stable reference for the electrode's negative terminal.
+- 6b: establish stable reference for the electrode's negative terminal. also shift the voltage out of negative range.
 - 6c: amplify electrode raw output for better reading and granularity for esp.
 
