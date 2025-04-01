@@ -10,12 +10,18 @@
 // have to use phone hotspot...
 
 // wifi config
-String ssid = "";
-String pass = "";
+String ssid = "Myke";
+String pass = "69696969";
+// String local_ip = "10.195.100.112"; // use laptop/pc ip
+String local_ip = "172.20.10.5";
+String serverUrl = "http://" + local_ip +   ":5000/data";
+// String serverUrl = "http://10.195.100.112:5000/data";
+// IPAddress localIp(10,195,100,112);
+IPAddress localIp(172,20,10,5);
 
-String local_ip = "";
-String serverUrl = "http://" + local_ip + ":5000/data";
-IPAddress localIp();
+// String local_ip = "";
+// String serverUrl = "http://" + local_ip + ":5000/data";
+// IPAddress localIp();
 
 // sensor config
 const int oneWireBus = 4; // gpio pin for ds18b20
@@ -23,6 +29,8 @@ OneWire oneWire(oneWireBus);
 DallasTemperature temp_sensor(&oneWire);
 
 void setup() {
+  delay(1000);
+
   // get serial connection (esp to programmer)
   Serial.begin(9600);
 
@@ -31,11 +39,10 @@ void setup() {
   WiFi.begin(ssid, pass);
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
-    Serial.println(".");
+    Serial.print(".");
   }
-  Serial.println("WiFi connection established!");
+  Serial.println("\nWiFi connection established!");
 
-  Serial.println("Pinging server...");
   WiFiClient client;
   if (!client.connect(localIp, 5000)) {
       Serial.println("Failed to connect to server!");
@@ -47,8 +54,8 @@ void setup() {
   // get sensor connection
   Serial.println("Establishing DS18B20 Connection...");
   temp_sensor.begin();
-  Serial.println("DS18B20 connected!");
-  Serial.println(temp_sensor.getDeviceCount());
+  Serial.print("DS18B20 connected: ");
+  Serial.print(temp_sensor.getDeviceCount());
 }
 
 void loop() {
@@ -67,13 +74,17 @@ void loop() {
 
     int httpResponseCode = http.POST(jsonPOST);
 
+    if(temp_data < 0) {
+        httpResponseCode = 0;
+    }
+
+    Serial.print("\n");
     Serial.println(temp_data);
-    Serial.println(httpResponseCode);
 
     if(httpResponseCode > 0) {
-      Serial.println("Post status: OK (");
-      Serial.println(httpResponseCode); 
-      Serial.println(")");
+      Serial.print("Post status: OK! (");
+      Serial.print(httpResponseCode);
+      Serial.print(")\n");
     }
     else {
       Serial.println("Post status: No response, failed to send budster (0)");

@@ -1,0 +1,18 @@
+- Capacitor, 0.1 uF `(x4)`
+- Capacitor, 1 uF `(x2)`
+- Capacitor, 10 uF `(x3)`
+- Capacitor, 100 uF `(x1)`
+- Terminal Block, 1x02, 2.54mm? `(x1)`
+- Terminal Block, 1x05, 2.54mm? `(x1)`
+- BNC Female, Horizontal `(x1)`
+- USB-C Receptacle `(x1)`
+- SOT-23 `(x2)`
+- Resistor, 1 kO `(x3)`
+- Resistor, 4.7 kO `(x1)`
+- Resisotr, 10 kO `(x8)`
+- Resistor, 100 kO `(x2)`
+- Button Switch, MJTP1250 `(x2)`
+- Op-Amp, TLC4502 `(x2)`
+- Regulator, AZ1117-3.3 `(x1)`
+- Shunt Reference, TL431LP `(x1)`
+- ESP32-S3-WROOM-1 `(x1)`
