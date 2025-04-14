@@ -46,8 +46,8 @@
 			(plot_on_all_layers_selection 0x0000000_00000000)
 			(disableapertmacros no)
 			(usegerberextensions no)
-			(usegerberattributes no)
-			(usegerberadvancedattributes no)
+			(usegerberattributes yes)
+			(usegerberadvancedattributes yes)
 			(creategerberjobfile yes)
 			(dashed_line_dash_ratio 12.000000)
 			(dashed_line_gap_ratio 3.000000)
@@ -74,9 +74,9 @@
 			(subtractmaskfromsilk no)
 			(outputformat 1)
 			(mirror no)
-			(drillshape 0)
+			(drillshape 1)
 			(scaleselection 1)
-			(outputdirectory "./")
+			(outputdirectory "")
 		)
 	)
 	(net 0 "")
@@ -620,7 +620,7 @@
 		(descr "tactile push button, 6x3.5mm, https://www.apem.com/idec-apem/en_US/PCB-switches/Tactile-Switches/MJTP-6mm-through-hole/c/MJTP_6mm_through%20hole?page=1")
 		(tags "PHAP3362A 6mm tact sw THT")
 		(property "Reference" "SW1"
-			(at 12.42 1.16 0)
+			(at 12.42 1.16 360)
 			(layer "F.SilkS")
 			(uuid "0efeafec-3c54-48c4-98ec-af1fb42d897c")
 			(effects
@@ -917,7 +917,7 @@
 			(uuid "37f69fb8-ab61-40d8-9c9d-e8cc95934113")
 		)
 		(fp_text user "${REFERENCE}"
-			(at 3 0 0)
+			(at 3 0 360)
 			(layer "F.Fab")
 			(uuid "cbd8f5f1-407a-429c-b806-dee02a0ba130")
 			(effects

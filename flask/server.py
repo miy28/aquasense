@@ -21,7 +21,7 @@ def get_temp_data(): # retrieve post request and send to the pandas backend
         print(f"Temperature: {temp} [Fahrenheit].")
 
         print("Storing...")
-        time = datetime.datetime.now()
+        time = datetime.datetime.now()  
         data["timestamp"] = time
 
         print(data)
@@ -31,7 +31,7 @@ def get_temp_data(): # retrieve post request and send to the pandas backend
         return -1
     
     return str(temp)
-
+    
 # def get_ph_data(): 
 #     data = request.get_json(silent=True)
 #     if not data:

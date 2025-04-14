@@ -18,4 +18,6 @@ LLM aquasense attention mechanism
     - derivative (slope) -> spikes are always a red flag, alert the user with an llm message
 
 - offline features
-    - just use tsfresh
+    - just use tsfresh  
+
+- sequence pattern mining

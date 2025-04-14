@@ -1,0 +1,116 @@
+G04 #@! TF.GenerationSoftware,KiCad,Pcbnew,8.0.8*
+G04 #@! TF.CreationDate,2025-04-04T13:05:52-05:00*
+G04 #@! TF.ProjectId,aqua_pcb_schem,61717561-5f70-4636-925f-736368656d2e,rev?*
+G04 #@! TF.SameCoordinates,Original*
+G04 #@! TF.FileFunction,Copper,L2,Bot*
+G04 #@! TF.FilePolarity,Positive*
+%FSLAX46Y46*%
+G04 Gerber Fmt 4.6, Leading zero omitted, Abs format (unit mm)*
+G04 Created by KiCad (PCBNEW 8.0.8) date 2025-04-04 13:05:52*
+%MOMM*%
+%LPD*%
+G01*
+G04 APERTURE LIST*
+G04 Aperture macros list*
+%AMRoundRect*
+0 Rectangle with rounded corners*
+0 $1 Rounding radius*
+0 $2 $3 $4 $5 $6 $7 $8 $9 X,Y pos of 4 corners*
+0 Add a 4 corners polygon primitive as box body*
+4,1,4,$2,$3,$4,$5,$6,$7,$8,$9,$2,$3,0*
+0 Add four circle primitives for the rounded corners*
+1,1,$1+$1,$2,$3*
+1,1,$1+$1,$4,$5*
+1,1,$1+$1,$6,$7*
+1,1,$1+$1,$8,$9*
+0 Add four rect primitives between the rounded corners*
+20,1,$1+$1,$2,$3,$4,$5,0*
+20,1,$1+$1,$4,$5,$6,$7,0*
+20,1,$1+$1,$6,$7,$8,$9,0*
+20,1,$1+$1,$8,$9,$2,$3,0*%
+G04 Aperture macros list end*
+G04 #@! TA.AperFunction,ComponentPad*
+%ADD10R,2.250000X2.250000*%
+G04 #@! TD*
+G04 #@! TA.AperFunction,ComponentPad*
+%ADD11C,2.250000*%
+G04 #@! TD*
+G04 #@! TA.AperFunction,ComponentPad*
+%ADD12R,2.400000X2.400000*%
+G04 #@! TD*
+G04 #@! TA.AperFunction,ComponentPad*
+%ADD13C,2.400000*%
+G04 #@! TD*
+G04 #@! TA.AperFunction,ComponentPad*
+%ADD14O,3.500000X7.000000*%
+G04 #@! TD*
+G04 #@! TA.AperFunction,ComponentPad*
+%ADD15RoundRect,0.400000X-0.400000X-0.400000X0.400000X-0.400000X0.400000X0.400000X-0.400000X0.400000X0*%
+G04 #@! TD*
+G04 #@! TA.AperFunction,ComponentPad*
+%ADD16C,1.600000*%
+G04 #@! TD*
+G04 #@! TA.AperFunction,HeatsinkPad*
+%ADD17O,0.950000X1.950000*%
+G04 #@! TD*
+G04 #@! TA.AperFunction,HeatsinkPad*
+%ADD18O,0.950000X2.150000*%
+G04 #@! TD*
+G04 #@! TA.AperFunction,HeatsinkPad*
+%ADD19C,0.600000*%
+G04 #@! TD*
+G04 #@! TA.AperFunction,ComponentPad*
+%ADD20R,1.050000X1.500000*%
+G04 #@! TD*
+G04 #@! TA.AperFunction,ComponentPad*
+%ADD21O,1.050000X1.500000*%
+G04 #@! TD*
+G04 APERTURE END LIST*
+D10*
+X158250000Y-87000000D03*
+D11*
+X151750000Y-87000000D03*
+D12*
+X142250000Y-121800000D03*
+D13*
+X145750000Y-121800000D03*
+D14*
+X171340000Y-89400000D03*
+X181500000Y-89500000D03*
+D15*
+X176420000Y-98290000D03*
+D16*
+X173880000Y-98290000D03*
+X176420000Y-95750000D03*
+X178960000Y-98290000D03*
+D17*
+X84550000Y-94975000D03*
+D18*
+X84550000Y-98175000D03*
+D17*
+X93450000Y-94975000D03*
+D18*
+X93450000Y-98175000D03*
+D19*
+X127425000Y-52260000D03*
+X127425000Y-53660000D03*
+X128125000Y-51560000D03*
+X128125000Y-52960000D03*
+X128125000Y-54360000D03*
+X128825000Y-52260000D03*
+X128825000Y-53660000D03*
+X129525000Y-51560000D03*
+X129525000Y-52960000D03*
+X129525000Y-54360000D03*
+X130225000Y-52260000D03*
+X130225000Y-53660000D03*
+D10*
+X129250000Y-125000000D03*
+D11*
+X135750000Y-125000000D03*
+D20*
+X121460000Y-113500000D03*
+D21*
+X122730000Y-113500000D03*
+X124000000Y-113500000D03*
+M02*
