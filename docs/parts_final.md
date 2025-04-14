@@ -1,0 +1,19 @@
+- [ &check; ] Capacitor, 0.1 uF `(x4)` - ECEB
+- [ &check; ] Capacitor, 1 uF `(x2)` - ECEB
+- [ &check; ] Capacitor, 10 uF `(x3)` - ECEB
+- [ &check; ] Capacitor, 100 uF `(x1)` - ECEB
+- [ &check; ] Terminal Block, 1x03, 3.5mm `(x1)` - [link](https://www.digikey.com/en/products/detail/phoenix-contact/1984620/950850)
+- [ &check; ] Terminal Block, 1x05, 3.5mm `(x1)` - [link](https://www.digikey.com/en/products/detail/phoenix-contact/1984798/950865)
+- [ &check; ] BNC Female, Horizontal `(x1)` - [link](https://www.digikey.com/en/products/detail/amphenol-rf/031-6575/4037241)
+- [ &check; ] USB-C Receptacle `(x1)` - [link](https://www.digikey.com/en/products/detail/amphenol-cs-commercial-products/124019772112A/13683231)
+    - note^ needs 5.1 kO pull-down resistor
+- [ &check; ] SOT-23 `(x2)` - ECEB
+- [ &check; ] Resistor, 1 kO `(x3)` - ECEB
+- [ &check; ] Resistor, 4.7 kO `(x1)` - ECEB
+- [ &check; ] Resisotr, 10 kO `(x8)` - ECEB
+- [ &check; ] Resistor, 100 kO `(x2)` - ECEB
+- [ &check; ] Button Switch, MJTP1250 `(x2)` - ECEB (???)
+- [ &check; ] Op-Amp, TLC4502 (LMV321SEG-7/SOT-353) `(x2)` - [link](https://www.digikey.com/en/products/detail/diodes-incorporated/LMV321SEG-7/2182576)
+- [ &check; ] Regulator, AZ1117-3.3 (SOT-223) `(x1)` - ECEB or [link](https://www.digikey.com/en/products/detail/diodes-incorporated/AZ1117CH-3-3TRG1/4470985)
+- [ &check; ] Shunt Reference, TL431LP `(x1)` - [link](https://www.digikey.com/en/products/detail/micro-commercial-co/TL431LP-AP/11609154)
+- [ &check; ] ESP32-S3-WROOM-1 `(x1)` - [link](https://www.digikey.com/en/products/detail/espressif-systems/ESP32-S3-WROOM-1-N8/15200089)
