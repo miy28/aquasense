@@ -16,9 +16,21 @@ function App() {
       {sensorData.length > 0 ? (
         <ul>
           {sensorData.map((row, i) => (
-            <li key={i}>
-              <strong>{row.sensor_type}</strong>: {row.value} @ {row.timestamp}
-            </li>
+            <li
+            key={i}
+            style={{
+              color: row.is_anomaly ? 'red' : 'black',
+              fontWeight: row.is_anomaly ? 'bold' : 'normal',
+              marginBottom: '0.5rem',
+            }}
+          >
+            <strong>{row.sensor_type}</strong>: {row.value} @ {row.timestamp}
+            {row.is_anomaly && (
+              <div>
+                <em>🚨 Anomaly: {row.anomaly_reason}</em>
+              </div>
+            )}
+          </li>
           ))}
         </ul>
       ) : (

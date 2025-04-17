@@ -1,35 +1,15 @@
 """
 model_utils.py
 
-this might get cooked 
+This module contains utility functions for offline data processing, pattern mining, and
+feature extraction for AquaSense analytics.
 
-anomaly.py isn't user specific or anything, just detects numbers inside and outside a range
-this model_utils file should:
-- Understand natural fluctuations
-- Learn from history
-- Adapt to specific tanks
+Responsibilities:
+- Extract time-series features using libraries like tsfresh.
+- Perform clustering, sequence mining, and other batch analyses.
+- Support deeper trend detection and modeling that is run periodically (e.g., once per day).
 
-Take historical sensor data
-Use it to train an ML model to detect anomalies that go beyond hard-coded thresholds.
-Examples:
-- A temperature spike that's unusual compared to your tank's normal range
-- A pattern in pH that precedes fish death
-- Sensor noise vs actual problem
-
-does not run live; in charge of:
-- Reading the entire historical dataset
-- Training an anomaly detection model
-- Saving it to disk
-- Loading it when needed
-
-Purpose:
-Handles training, saving, loading, and inference for machine learning models
-used in the system. This includes anomaly detection models and any future
-predictive or classification models.
-
-Future responsibilities:
-- Preprocess historical data
-- Train models
-- Save/load models with joblib or pickle
-- Expose utility functions for real-time inference
+Typical usage:
+- Used in scheduled jobs to analyze historical data and generate insights.
+- Not intended for real-time processing.
 """

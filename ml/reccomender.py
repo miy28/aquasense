@@ -1,15 +1,15 @@
 """
-recommender.py
+reccomender.py
 
-this file activates after an anomaly is found and will give user a prompt that they can digest and use.
+This module handles generation of human-readable insights and recommendations using LLMs
+or prompt-engineered logic based on AquaSense data trends and anomalies.
 
-Purpose:
-Hosts the logic for generating personalized, context-aware feedback
-using fine-tuned large language models (LLMs). This will take flagged anomalies,
-analyze user trends, and return natural language explanations or recommendations.
+Responsibilities:
+- Summarize anomalies or daily trends into plain-language messages for the user.
+- Integrate with LLMs (e.g., via API or local models like Ollama) to provide smart explanations.
+- Support both real-time alerting and daily reports.
 
-In the future, this will:
-- Connect to a fine-tuned LLM or OpenAI API
-- Generate alerts like "Water temperature is unusually high—consider moving tank"
-- Personalize responses based on user history
+Typical usage:
+- Called after anomaly detection or offline analysis to generate feedback.
+- Can be extended to support multi-modal inputs (e.g., charts, RAG pipelines).
 """
