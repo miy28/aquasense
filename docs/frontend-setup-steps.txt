@@ -1,0 +1,13 @@
+packages:
+pip install flask requests
+# npm install - if u dont have
+
+
+frontend dev steps:
+
+cd web/root
+npm run dev #serves at 5173
+
+
+Proxy API Calls:
+vite.config.js #5000 to 5173 as of now

@@ -1,13 +1,102 @@
-body {
+/* reset + utility */
+* {
+  box-sizing: border-box;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+}
+html, body, #root {
+  height: 100%;
+  font-family: 'Segoe UI', sans-serif;
+  background: #f0f4f8;
+  color: #333;
+}
+.centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* layout */
+.App {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: #fff;
+}
+.error {
+  padding: 1rem;
+  text-align: center;
+  color: #ff6b6b;
+  font-weight: bold;
+}
+
+/* header */
+.NavBar {
+  padding: 1rem;
+  text-align: center;
+  font-size: 1.5rem;
+  background: rgba(0,0,0,0.2);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+/* dashboard grid */
+.Dashboard {
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  overflow-y: auto;
+}
+
+/* individual card */
+.SensorCard {
+  background: rgba(255,255,255,0.15);
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  transition: transform 0.2s;
+}
+.SensorCard:hover {
+  transform: translateY(-4px);
+}
+.SensorCard h3 {
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+}
+.SensorCard .value {
+  font-size: 2rem;
+  margin-bottom: 0.25rem;
+}
+.SensorCard .ts {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+.SensorCard .reason {
+  margin-top: 0.5rem;
+  color: #ffcccb;
+  font-weight: 600;
+}
+.SensorCard.anomaly {
+  background: rgba(255,0,0,0.3);
+}
+
+/* loader */
+.Loader {
+  flex-direction: column;
+  color: #fff;
+  margin-top: 2rem;
+}
+.Loader .spinner {
+  width: 40px;
+  height: 40px;
+  border: 5px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: .5rem;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

@@ -1,6 +1,4 @@
-#!/bin/sh
-'''exec' "/Users/anuragraychowdhury/Desktop/CS/side projects/aquasense/.venv/bin/python" "$0" "$@"
-' '''
+#!/mnt/e/DEV-WORK/ECE445/aquasense/.venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
