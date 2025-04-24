@@ -10,14 +10,14 @@
 // have to use phone hotspot...
 
 // wifi config
-String ssid = "Myke";
-String pass = "69696969";
+String ssid = "Anurag";
+String pass = "Anurag123";
 // String local_ip = "10.195.100.112"; // use laptop/pc ip
-String local_ip = "172.20.10.5";
-String serverUrl = "http://" + local_ip +   ":5000/data";
+String local_ip = "172.20.10.6";
+String serverUrl = "http://" + local_ip + ":5001/data/temp";
 // String serverUrl = "http://10.195.100.112:5000/data";
 // IPAddress localIp(10,195,100,112);
-IPAddress localIp(172,20,10,5);
+IPAddress localIp(172,20,10,6);
 
 // String local_ip = "";
 // String serverUrl = "http://" + local_ip + ":5000/data";
@@ -34,6 +34,12 @@ void setup() {
   // get serial connection (esp to programmer)
   Serial.begin(9600);
 
+  Serial.println("Scanning for networks...");
+  int n = WiFi.scanNetworks();
+  for (int i = 0; i < n; ++i) {
+    Serial.println(WiFi.SSID(i));
+  }
+
   // get wifi connection
   Serial.println("Establishing WiFi connection...");
   WiFi.begin(ssid, pass);
@@ -44,7 +50,7 @@ void setup() {
   Serial.println("\nWiFi connection established!");
 
   WiFiClient client;
-  if (!client.connect(localIp, 5000)) {
+  if (!client.connect(localIp, 5001)) {
       Serial.println("Failed to connect to server!");
   } else {
       Serial.println("Connected to Flask server!");

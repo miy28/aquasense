@@ -30,26 +30,26 @@ temp        | 23    | 2025-03-26 14:45:00
   }
 ]
 '''
+
 # new get endpoint for React
 @app.route('/api/data', methods=['GET'])
 def serve_all_data():
     from backend import data
     from ml.anomaly import run_all_anomaly_checks
 
-    # entire data set, including normal rows
     data_copy = data.copy()
     data_copy['is_anomaly'] = False
     data_copy['anomaly_reason'] = None
 
-    # returns just the anomaly rows, we need to add that to the total data
     anomalies = run_all_anomaly_checks(data)
     anomalies['is_anomaly'] = True
 
-    # combines data and removes the duplicates
     combined = pd.concat([data_copy, anomalies], ignore_index=True)
     combined = combined.drop_duplicates(subset=['sensor_type', 'value', 'timestamp'], keep='last')
+    
+    combined = combined.where(pd.notnull(combined), None)
 
-    return jsonify(combined.to_dict(orient='records'))
+    return jsonify(json.loads(combined.to_json(orient='records')))
 
 
 # endpoint to get temp data from arduino
@@ -127,4 +127,4 @@ def get_ph_data():
 #     return do
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5001)

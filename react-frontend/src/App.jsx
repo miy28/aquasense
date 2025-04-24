@@ -92,9 +92,10 @@ export default function App() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch('http://localhost:5000/api/data');
+        const res = await fetch('http://localhost:5001/api/data');
         if (!res.ok) throw new Error(res.statusText);
         const data = await res.json();
+        
         setSensors(data);
       } catch (e) {
         console.error(e);

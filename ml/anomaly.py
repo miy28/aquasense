@@ -68,7 +68,7 @@ def detect_spikes(df: pd.DataFrame, spike_thresholds={'temp':3.0, 'acid':0.5}):
             row_dict['anomaly_reason'] = f"sudden {sensor} spike" 
             alerts.append(row_dict)
     
-    return pd.DataFrame(alerts).drop(columns=['delta', 'sensor_prev'])
+    return pd.DataFrame(alerts)
 
 def run_all_anomaly_checks(df: pd.DataFrame):
     threshold_alerts = detect_anomalies(df)
