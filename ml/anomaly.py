@@ -12,6 +12,9 @@ Typical usage:
 - Called whenever new data is received from sensors to check for unsafe or unusual conditions.
 """
 import pandas as pd
+import numpy as np
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
 
 # only put in random sample temps for now
 IDEAL_TEMP_RANGE = (55, 85)
@@ -74,14 +77,48 @@ def run_all_anomaly_checks(df: pd.DataFrame):
     threshold_alerts = detect_anomalies(df)
     spike_alerts = detect_spikes(df)
 
-    combined = pd.concat([threshold_alerts, spike_alerts], ignore_index=True)
-    combined = combined.drop_duplicates()
+    pca = detect_pca_anomalies(df, sensor='temp', n_components=1, threshold=3.0)
+
+    combined = pd.concat([threshold_alerts, spike_alerts, pca], ignore_index=True)
+    combined = combined.drop_duplicates(
+        subset=['sensor_type','value','timestamp'],
+        keep='last')
 
     return combined
 
+def detect_pca_anomalies(df: pd.DataFrame,
+                         sensor: str = 'temp',
+                         n_components: int = 1,
+                         threshold: float = 3.0) -> pd.DataFrame:
+    """ copilot comm
+    Flag temperature readings whose PCA reconstruction error is > mean + threshold*std.
+    Returns a DataFrame of those anomalous rows with `anomaly_reason='PCA reconstruction error'`.
+    """
 
+    # 1) Filter just the temperature sensor - has to be updated for ph n light
+    temp_df = df[df.sensor_type == sensor].sort_values('timestamp')
+    if temp_df.empty:
+        return pd.DataFrame(columns=df.columns.tolist() + ['anomaly_reason'])
 
+    # 2) Standardize values -scikit
+    values = temp_df['value'].to_numpy().reshape(-1, 1)
+    scaler = StandardScaler().fit(values)
+    scaled = scaler.transform(values)
 
+    # 3) Fit PCA & reconstruct
+    pca = PCA(n_components=n_components).fit(scaled)
+    projected    = pca.transform(scaled)
+    reconstructed = pca.inverse_transform(projected)
+
+    # 4) Compute reconstruction errors
+    recon_err = np.mean((scaled - reconstructed)**2, axis=1)
+    mean_err, std_err = recon_err.mean(), recon_err.std()
+
+    # 5) Flag outliers
+    outlier_mask = recon_err > (mean_err + threshold * std_err)
+    outliers = temp_df.iloc[np.where(outlier_mask)[0]].copy()
+    outliers['anomaly_reason'] = 'PCA reconstruction error'
+    return outliers
 
 
             
