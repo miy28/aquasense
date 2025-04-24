@@ -45,7 +45,35 @@ const styles = {
   chartContainer: { marginBottom: '2rem', padding: '1rem', background: 'rgba(224,247,250,0.1)', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.3)' },
   loader: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '60vh', color: '#e0f7fa' },
   spinner: { width: '48px', height: '48px', border: '6px solid rgba(224,247,250,0.3)', borderTop: '6px solid #e0f7fa', borderRadius: '50%', animation: 'spin 1s linear infinite', marginBottom: '1rem' },
-  errorMessage: { textAlign: 'center', color: '#ff8a65', margin: '1rem', fontWeight: 'bold' }
+  errorMessage: { textAlign: 'center', color: '#ff8a65', margin: '1rem', fontWeight: 'bold' },
+  recommendationBox: {
+    position: 'relative',
+    background: 'linear-gradient(135deg, #0097a7 0%, #26c6da 100%)',
+    borderRadius: '16px',
+    padding: '2rem',
+    boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+    color: '#fff',                     // white text
+    textAlign: 'center',
+    margin: '2rem auto',
+    maxWidth: '640px',
+    backgroundImage: 'url("/fish-bg.png")',
+    backgroundBlendMode: 'soft-light',
+    backgroundRepeat: 'no-repeat',
+    backgroundPosition: 'center bottom',
+    backgroundSize: '200px 100px',
+    backdropFilter: 'brightness(1.2) contrast(1.1)',
+  },
+  poweredBy: {
+    marginTop: '1.5rem',
+    fontSize: '0.75rem',
+    color: 'rgba(255,255,255,0.7)',
+  },
+  recommendationText: {
+    fontSize: '1.1rem',
+    lineHeight: '1.6',
+    margin: '1rem 0',
+  },
+
 };
 
 // Keyframes for spinner
@@ -104,9 +132,12 @@ function RecentAlerts({ alerts, recommendation }) {
       </div>
 
       {/* LLM-driven recommendation */}
-      <div style={{ ...styles.card, gridColumn: '1 / -1' }}>
-        <h3>Tank Owner Tips</h3>
-        <p>{recommendation}</p>
+      <div style={styles.recommendationBox}>
+        <h3 style={{ margin: 0, fontSize: '1.5rem' }}>Tank Owner Tips</h3>
+        <p style={styles.recommendationText}>
+          {recommendation}
+        </p>
+        <div style={styles.poweredBy}>Powered by AI & 93 🤖</div>
       </div>
     </div>
   );
@@ -140,39 +171,44 @@ export default function App() {
 
   useEffect(() => {
     async function fetchData() {
+      let data;
+      // 1) Fetch sensor data
       try {
         const res = await fetch('http://localhost:5000/api/data');
         if (!res.ok) throw new Error(res.statusText);
-        const data = await res.json();
+        data = await res.json();
         setSensors(data);
-        // once we have sensor data, request LLM tips:
-        const temp  = data.find(s => s.sensor_type === 'Temperature')?.value;
-        const ph    = data.find(s => s.sensor_type === 'pH Level')?.value;
-        const light = data.find(s => s.sensor_type === 'Brightness')?.value;
-        try {
-          const recRes = await fetch('http://localhost:5000/api/recommend', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ temp, ph, light })
-          });
-          if (!recRes.ok) throw new Error(recRes.statusText);
-          const recJson = await recRes.json();
-          setRecommendation(recJson.recommendation || recJson.text || 'No tips available.');
-        } catch {
-          setRecommendation('Unable to load recommendations.');
-        }
       } catch (e) {
-        console.error(e);
+        console.error('Sensor fetch failed:', e);
         setError('Failed to fetch sensor data');
+        data = dummySensors;
         setSensors(dummySensors);
-        setRecommendation('Showing default tips.');
       } finally {
         setLoading(false);
       }
+  
+      // 2) Always attempt recommendation with whatever data we have
+      const temp  = data.find(s => s.sensor_type === 'Temperature')?.value;
+      const ph    = data.find(s => s.sensor_type === 'pH Level')?.value;
+      const light = data.find(s => s.sensor_type === 'Brightness')?.value;
+      try {
+        const recRes = await fetch('http://localhost:5000/api/recommend', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ temp, ph, light })
+        });
+        if (!recRes.ok) throw new Error(recRes.statusText);
+        const recJson = await recRes.json();
+        setRecommendation(recJson.recommendation ?? 'No tips available.');
+      } catch (e) {
+        console.error('Recommendation fetch failed:', e);
+        setRecommendation('Unable to load recommendations.');
+      }
     }
+  
     fetchData();
   }, []);
-
+  
   const pages = {
     'Recent Alerts': () => <RecentAlerts alerts={error ? dummyAlerts : alerts} recommendation={recommendation} />,    
     'Data Dashboard': () => <DataDashboard sensors={error ? dummySensors : sensors} />,    

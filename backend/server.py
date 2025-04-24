@@ -9,6 +9,7 @@ import json
 from ml.anomaly import detect_anomalies
 import pandas as pd
 
+import requests
 from backend import push_data
 
 app = Flask(__name__)
@@ -125,6 +126,44 @@ def get_ph_data():
 #         return -1
 
 #     return do
+
+
+@app.route('/api/recommend', methods=['POST'])
+def recommend():
+    """
+    Accepts JSON: { temp: <num>, ph: <num>, light: <num> }
+    Calls the local LLaMA HTTP server to get actionable tips.
+    Returns JSON: { recommendation: <string> }
+    """
+    params = request.get_json(silent=True) or {}
+    temp  = params.get('temp')
+    ph    = params.get('ph')
+    light = params.get('light')
+
+    # LLM prompt build yodie
+    prompt = (
+        "You are an expert aquarium consultant. Given these tank conditions:\n"
+        f"- Water temperature: {temp} °F\n"
+        f"- pH level: {ph}\n"
+        f"- Brightness level (0-1000): {light}\n\n"
+        "Provide 3 concise tips to improve these conditions for healthy fish."
+    )
+
+    # inference api request for local brodie
+    try:
+        llm_resp = requests.post(
+            "http://localhost:8000/infer",
+            json={ "prompt": prompt },
+            timeout=10
+        )
+        llm_resp.raise_for_status()
+        result = llm_resp.json()
+        text = result.get("text", "")
+        return jsonify({ "recommendation": text.strip() })
+    except Exception as e:
+        print("LLM call failed:", e)
+        return jsonify({ "recommendation": "Sorry, could not generate recommendations right now." }), 500
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

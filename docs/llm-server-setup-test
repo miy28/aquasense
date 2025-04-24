@@ -1,0 +1,15 @@
+
+
+wget https://gpt4all.io/models/ggml-gpt4all-j-v1.3-groovy.bin -O gpt4all-j.gguf
+
+python backend/llm_server.py
+
+
+curl -X POST http://localhost:8000/infer \
+  -H "Content-Type: application/json" \
+  -d '{"prompt":"Hello, how are you?"}'
+
+
+curl -X POST http://localhost:5000/api/recommend \
+  -H "Content-Type: application/json" \
+  -d '{"temp":75,"ph":7.2,"light":200}' | jq .
