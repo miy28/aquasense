@@ -16,6 +16,7 @@ String pass = "Anurag123";
 String local_ip = "172.20.10.6";
 String tempServerUrl = "http://" + local_ip + ":5001/data/temp";
 String lightServerUrl = "http://" + local_ip + ":5001/data/light";
+String phServerUrl = "http://" + local_ip + ":5001/data/pH";
 // String serverUrl = "http://10.195.100.112:5000/data";
 // IPAddress localIp(10,195,100,112);
 IPAddress localIp(172,20,10,6);
@@ -36,6 +37,11 @@ int lightVal_bright;
 const int light_sensor_dark = 33;
 int lightInit_dark;
 int lightVal_dark;
+
+// ph sensor config
+const int ph_sensor_pin = 2;
+const float pH_offset = 0.0;      // Calibration offset
+const float pH_linear = 3.5;      // Linear coefficient (depends on sensor)
 
 void setup() {
   pinMode(light_sensor_dark, INPUT);
@@ -71,6 +77,9 @@ void setup() {
   // get light connection
   lightInit_dark = analogRead(light_sensor_dark) * (3.3 / 4095.0);
   lightInit_bright = analogRead(light_sensor_light) * (3.3 / 4095.0);
+
+  // get ph connection
+
 }
 
 void loop() {
@@ -111,19 +120,49 @@ void loop() {
 
     http_light_bright.end(); // close after POST
 
+    // --- pH Sensor POST ---
+
+    // Read and average 10 samples for stability
+    int raw = 0;
+    for(int i = 0; i < 10; i++) {
+      raw += analogRead(ph_sensor_pin);
+      delay(10);
+    }
+    raw /= 10;
+
+    // Convert to voltage (0-3.3V range)
+    float voltage = raw * (3.3 / 4095.0);
+
+    // Basic pH calculation with temperature compensation
+    float data_ph = (7.0 - ((voltage - 2.5) * pH_linear)) + pH_offset;
+    data_ph += (25.0 - data_temp) * 0.03; // Temperature compensation
+
+    HTTPClient http_ph;
+    http_ph.begin(phServerUrl);
+    http_ph.addHeader("Content-Type", "application/json");
+
+    String jsonPOST_ph = "{\"sensor_type\": \"pH\", \"value\": " + String(data_ph) + "}";
+    int httpResponseCode_ph = http_ph.POST(jsonPOST_ph);
+
+    http_ph.end(); // close after POST
+
     // --- Serial Prints ---
     Serial.print("\n");
     Serial.println("temperature: " + String(data_temp));
     Serial.println("dark sensor: " + String(data_light_dark));
     Serial.println("light sensor: " + String(data_light_bright));
+    Serial.print("pH sensor: ");
+    Serial.println(data_ph, 2);
 
-    if(httpResponseCode_temp > 0 && httpResponseCode_light_dark > 0 && httpResponseCode_light_bright > 0) {
+    if(httpResponseCode_temp > 0 && httpResponseCode_light_dark > 0 && httpResponseCode_light_bright > 0 && httpResponseCode_ph > 0) {
       Serial.print("Post status: OK! (");
       Serial.print(httpResponseCode_temp);
       Serial.print(", ");
       Serial.print(httpResponseCode_light_dark);
       Serial.print(", ");
       Serial.print(httpResponseCode_light_bright);
+      Serial.print(", ");
+      Serial.print(httpResponseCode_ph);
       Serial.print(")\n");
     }
     else {

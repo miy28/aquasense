@@ -90,7 +90,7 @@ def get_ph_data():
     sensor_type = data.get("sensor_type")
     ph = data.get("value")
     
-    if(sensor_type == "acid"):
+    if(sensor_type == "pH"):
         print(f"Acidity Level: {ph} [pH].")
 
         print("Storing...")
@@ -102,7 +102,7 @@ def get_ph_data():
         print("No acidity readings found!")
         return -1
 
-    return ph
+    return jsonify({"pH": ph})
 
 @app.route('/data/light', methods=['POST'])
 def get_light_data(): 
