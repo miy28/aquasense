@@ -14,7 +14,8 @@ String ssid = "Anurag";
 String pass = "Anurag123";
 // String local_ip = "10.195.100.112"; // use laptop/pc ip
 String local_ip = "172.20.10.6";
-String serverUrl = "http://" + local_ip + ":5001/data/temp";
+String tempServerUrl = "http://" + local_ip + ":5001/data/temp";
+String lightServerUrl = "http://" + local_ip + ":5001/data/light";
 // String serverUrl = "http://10.195.100.112:5000/data";
 // IPAddress localIp(10,195,100,112);
 IPAddress localIp(172,20,10,6);
@@ -23,22 +24,26 @@ IPAddress localIp(172,20,10,6);
 // String serverUrl = "http://" + local_ip + ":5000/data";
 // IPAddress localIp();
 
-// sensor config
+// temp sensor config
 const int oneWireBus = 0; // gpio pin for ds18b20
 OneWire oneWire(oneWireBus);
 DallasTemperature temp_sensor(&oneWire);
 
+// light sensor config
+const int light_sensor_light = 32;
+int lightInit_bright;
+int lightVal_bright;
+const int light_sensor_dark = 33;
+int lightInit_dark;
+int lightVal_dark;
+
 void setup() {
+  pinMode(light_sensor_dark, INPUT);
+  pinMode(light_sensor_light, INPUT);
   delay(1000);
 
   // get serial connection (esp to programmer)
   Serial.begin(9600);
-
-  Serial.println("Scanning for networks...");
-  int n = WiFi.scanNetworks();
-  for (int i = 0; i < n; ++i) {
-    Serial.println(WiFi.SSID(i));
-  }
 
   // get wifi connection
   Serial.println("Establishing WiFi connection...");
@@ -57,47 +62,74 @@ void setup() {
       client.stop();
   }
 
-  // get sensor connection
+  // get temp connection
   Serial.println("Establishing DS18B20 Connection...");
   temp_sensor.begin();
   Serial.print("DS18B20 connected: ");
   Serial.print(temp_sensor.getDeviceCount());
+
+  // get light connection
+  lightInit_dark = analogRead(light_sensor_dark) * (3.3 / 4095.0);
+  lightInit_bright = analogRead(light_sensor_light) * (3.3 / 4095.0);
 }
 
 void loop() {
-  // // put your main code here, to run repeatedly:
   if (WiFi.status() == WL_CONNECTED) {
+    // --- Temperature POST ---
     HTTPClient http;
-    http.begin(serverUrl);
+    http.begin(tempServerUrl);  // Temp still goes to /data/temp
     http.addHeader("Content-Type", "application/json");
     
-    // int httpResponseCode = http.POST("herro");
-
     temp_sensor.requestTemperatures();
-    float temp_data = temp_sensor.getTempFByIndex(0);
+    float data_temp = temp_sensor.getTempFByIndex(0);
 
-    String jsonPOST = "{\"sensor_type\": \"temp\", \"value\": " + String(temp_data) + "}";
+    String jsonPOST_temp = "{\"sensor_type\": \"temp\", \"value\": " + String(data_temp) + "}";
+    int httpResponseCode_temp = http.POST(jsonPOST_temp);
 
-    int httpResponseCode = http.POST(jsonPOST);
+    http.end(); // Close temp HTTP session
 
-    if(temp_data < 0) {
-        httpResponseCode = 0;
-    }
+    // --- Light Sensors POST ---
 
+    float data_light_dark = analogRead(light_sensor_dark);
+    float data_light_bright = analogRead(light_sensor_light);
+
+    HTTPClient http_light_dark;
+    http_light_dark.begin(lightServerUrl);
+    http_light_dark.addHeader("Content-Type", "application/json");
+
+    String jsonPOST_light_dark = "{\"sensor_type\": \"light_dark\", \"value\": " + String(data_light_dark) + "}";
+    int httpResponseCode_light_dark = http_light_dark.POST(jsonPOST_light_dark);
+
+    http_light_dark.end(); // close after POST
+
+    HTTPClient http_light_bright;
+    http_light_bright.begin(lightServerUrl);
+    http_light_bright.addHeader("Content-Type", "application/json");
+
+    String jsonPOST_light_bright = "{\"sensor_type\": \"light_bright\", \"value\": " + String(data_light_bright) + "}";
+    int httpResponseCode_light_bright = http_light_bright.POST(jsonPOST_light_bright);
+
+    http_light_bright.end(); // close after POST
+
+    // --- Serial Prints ---
     Serial.print("\n");
-    Serial.println(temp_data);
+    Serial.println("temperature: " + String(data_temp));
+    Serial.println("dark sensor: " + String(data_light_dark));
+    Serial.println("light sensor: " + String(data_light_bright));
 
-    if(httpResponseCode > 0) {
+    if(httpResponseCode_temp > 0 && httpResponseCode_light_dark > 0 && httpResponseCode_light_bright > 0) {
       Serial.print("Post status: OK! (");
-      Serial.print(httpResponseCode);
+      Serial.print(httpResponseCode_temp);
+      Serial.print(", ");
+      Serial.print(httpResponseCode_light_dark);
+      Serial.print(", ");
+      Serial.print(httpResponseCode_light_bright);
       Serial.print(")\n");
     }
     else {
-      Serial.println("Post status: No response, failed to send budster (0)");
+      Serial.println("Post status: No response, failed to send. FULCRUM OUT (0)");
     }
 
-    http.end();
-
-    delay(10000); // temperature readings every 10 seconds
+    delay(2500); // 2.5 second delay
   }
 }
