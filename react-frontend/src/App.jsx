@@ -156,8 +156,6 @@ function MyAccount({ user }) { return (<div><h2>My Account</h2><div style={style
 // My Fish page
 function MyFish({ fish }) { return (<div><h2>My Fish</h2><div style={styles.grid}>{fish.map(f => (<div key={f.id} style={styles.card} onMouseEnter={e => e.currentTarget.style.transform = styles.cardHover.transform} onMouseLeave={e => e.currentTarget.style.transform = 'none'}><h3>{f.name}</h3><p>Health: {f.health}</p></div>))}</div></div>); }
 
-
-
 // Main App component with live API and dummy fallback
 export default function App() {
   const [page, setPage] = useState('Recent Alerts');
@@ -174,9 +172,9 @@ export default function App() {
       let data;
       // 1) Fetch sensor data
       try {
-        const res = await fetch('http://localhost:5000/api/data');
+        const res = await fetch('http://localhost:5001/api/data');
         if (!res.ok) throw new Error(res.statusText);
-        data = await res.json();
+        data = await res.json(); 
         setSensors(data);
       } catch (e) {
         console.error('Sensor fetch failed:', e);
@@ -188,11 +186,24 @@ export default function App() {
       }
   
       // 2) Always attempt recommendation with whatever data we have
-      const temp  = data.find(s => s.sensor_type === 'Temperature')?.value;
-      const ph    = data.find(s => s.sensor_type === 'pH Level')?.value;
-      const light = data.find(s => s.sensor_type === 'Brightness')?.value;
+      const normalize = str => str?.toLowerCase().replace(/\s/g, '');
+
+      const temp = data
+        .filter(s => normalize(s.sensor_type) === 'temp' && s.value > -100)
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))[0]?.value;
+      
+      const ph = data
+        .filter(s => normalize(s.sensor_type) === 'phlevel' && s.value > 0)
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))[0]?.value;
+      
+      const light = data
+        .filter(s => normalize(s.sensor_type) === 'brightness' && s.value > 0)
+        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))[0]?.value;
+
+      console.log(`[RECOMMEND INPUT] Temp: ${temp}, pH: ${ph}, Light: ${light}`);
+
       try {
-        const recRes = await fetch('http://localhost:5000/api/recommend', {
+        const recRes = await fetch('http://localhost:5001/api/recommend', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ temp, ph, light })

@@ -31,26 +31,26 @@ temp        | 23    | 2025-03-26 14:45:00
   }
 ]
 '''
+
 # new get endpoint for React
 @app.route('/api/data', methods=['GET'])
 def serve_all_data():
     from backend import data
     from ml.anomaly import run_all_anomaly_checks
 
-    # entire data set, including normal rows
     data_copy = data.copy()
     data_copy['is_anomaly'] = False
     data_copy['anomaly_reason'] = None
 
-    # returns just the anomaly rows, we need to add that to the total data
     anomalies = run_all_anomaly_checks(data)
     anomalies['is_anomaly'] = True
 
-    # combines data and removes the duplicates
     combined = pd.concat([data_copy, anomalies], ignore_index=True)
     combined = combined.drop_duplicates(subset=['sensor_type', 'value', 'timestamp'], keep='last')
+    
+    combined = combined.where(pd.notnull(combined), None)
 
-    return jsonify(combined.to_dict(orient='records'))
+    return jsonify(json.loads(combined.to_json(orient='records')))
 
 
 # endpoint to get temp data from arduino
@@ -104,6 +104,30 @@ def get_ph_data():
 
     return ph
 
+@app.route('/data/light', methods=['POST'])
+def get_light_data(): 
+    data = request.get_json(silent=True)
+    if not data:
+        print("Error: invalid JSON.")
+        return -1
+
+    sensor_type = data.get("sensor_type")
+    light_value = data.get("value")
+    
+    if(sensor_type in ["light_dark", "light_bright"]):
+        print(f"Light Sensor Reading ({sensor_type}): {light_value}")
+
+        print("Storing...")
+        time = datetime.datetime.now()
+        data["timestamp"] = time
+
+        push_data(data)
+    else:
+        print("No valid light sensor readings found!")
+        return -1
+
+    return str(light_value)
+
 # def get_do_data(): 
 #     data = request.get_json(silent=True)
 #     if not data:
@@ -127,7 +151,6 @@ def get_ph_data():
 
 #     return do
 
-
 @app.route('/api/recommend', methods=['POST'])
 def recommend():
     """
@@ -140,6 +163,8 @@ def recommend():
     ph    = params.get('ph')
     light = params.get('light')
 
+    print(f"[INFO] Incoming values: temp={temp}, ph={ph}, light={light}")
+
     # LLM prompt build yodie
     prompt = (
         "You are an expert aquarium consultant. Given these tank conditions:\n"
@@ -149,6 +174,8 @@ def recommend():
         "Provide 3 concise tips to improve these conditions for healthy fish."
     )
 
+    print("[LLM PROMPT]:\n" + prompt)
+    
     # inference api request for local brodie
     try:
         llm_resp = requests.post(
@@ -158,12 +185,12 @@ def recommend():
         )
         llm_resp.raise_for_status()
         result = llm_resp.json()
+        print("[INFO] LLM Response:", result)
         text = result.get("text", "")
         return jsonify({ "recommendation": text.strip() })
     except Exception as e:
         print("LLM call failed:", e)
         return jsonify({ "recommendation": "Sorry, could not generate recommendations right now." }), 500
 
-
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5001)

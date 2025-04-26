@@ -71,18 +71,14 @@ def detect_spikes(df: pd.DataFrame, spike_thresholds={'temp':3.0, 'acid':0.5}):
             row_dict['anomaly_reason'] = f"sudden {sensor} spike" 
             alerts.append(row_dict)
     
-    return pd.DataFrame(alerts).drop(columns=['delta', 'sensor_prev'])
+    return pd.DataFrame(alerts)
 
 def run_all_anomaly_checks(df: pd.DataFrame):
     threshold_alerts = detect_anomalies(df)
     spike_alerts = detect_spikes(df)
 
-    pca = detect_pca_anomalies(df, sensor='temp', n_components=1, threshold=3.0)
-
-    combined = pd.concat([threshold_alerts, spike_alerts, pca], ignore_index=True)
-    combined = combined.drop_duplicates(
-        subset=['sensor_type','value','timestamp'],
-        keep='last')
+    combined = pd.concat([threshold_alerts, spike_alerts], ignore_index=True)
+    combined = combined.drop_duplicates()
 
     return combined
 
@@ -121,8 +117,5 @@ def detect_pca_anomalies(df: pd.DataFrame,
     return outliers
 
 
+
             
-
-
-
-
