@@ -169,6 +169,6 @@ void loop() {
       Serial.println("Post status: No response, failed to send. FULCRUM OUT (0)");
     }
 
-    delay(2500); // 2.5 second delay
+    delay(5000); // 5 second delay
   }
 }

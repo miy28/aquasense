@@ -167,12 +167,13 @@ def recommend():
 
     # LLM prompt build yodie
     prompt = (
-        "You are an expert aquarium consultant. Given these tank conditions:\n"
-        f"- Water temperature: {temp} °F\n"
-        f"- pH level: {ph}\n"
-        f"- Brightness level (0-1000): {light}\n\n"
-        "Provide 3 concise tips to improve these conditions for healthy fish."
-    )
+    "You are an expert aquarium consultant. Given these tank conditions:\n"
+    f"- Water temperature: {temp} °F\n"
+    f"- pH level: {ph}\n"
+    f"- Brightness level (0-1000): {light}\n\n"
+    "Provide exactly 3 different and useful tips (one per line) to improve fish health. "
+    "Each tip should be clear and non-repetitive."
+)
 
     print("[LLM PROMPT]:\n" + prompt)
     
