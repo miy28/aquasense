@@ -29,7 +29,7 @@ def infer():
     outputs = model.generate(
         **inputs,
         max_new_tokens=100,
-        do_sample=True,
+        do_sample=True, 
         top_p=0.9,
         temperature=0.8,
         pad_token_id=tokenizer.eos_token_id
