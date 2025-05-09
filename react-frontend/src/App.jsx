@@ -394,7 +394,7 @@ export default function App() {
                   position: 'fixed',
                   bottom: '10px',
                   right: '10px',
-                  background: 'rgba(0,255,0,0.3)',
+                  background: 'rgba(0,0,255,0.3)',
                   border: 'none',
                   width: '40px',
                   height: '40px',

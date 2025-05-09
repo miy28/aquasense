@@ -14,7 +14,7 @@ Need a dedicated module to house co-processor (TPU) or some other low-power GPU
 
 Google Coral TPU
 
-![alt text](assets/1.png "Title")
+![alt text](assets/1.1.png "Title")
 
 Upon first glance, this looks quite promising…
 But we’ll need to design our pcb ourselves, this looks very involved
